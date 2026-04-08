@@ -1,75 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AI Learning Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DS & AI Time Management Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
+    <nav class="top-nav">
+        <div class="container tabs">
+            <button class="tab-btn active" data-target="dashboard-view">Dashboard</button>
+            <button class="tab-btn" data-target="logbook-view">Log Book</button>
+            <button class="tab-btn" data-target="monthly-view">Monthly Tracker</button>
+        </div>
+    </nav>
 
-<h1>AI Learning Performance Dashboard</h1>
-<p class="subtitle">
-Track learning quality, not just hours.
-</p>
+    <main class="container">
+        <!-- =======================
+             PAGE 1: DASHBOARD
+             ======================= -->
+        <section id="dashboard-view" class="view active">
+            <header class="page-header">
+                <div class="header-left">
+                    <h1 id="greeting">Good morning</h1>
+                    <div id="today-date" class="muted-text"></div>
+                </div>
+                <div class="header-right">
+                    <span class="pill pill-green-outline">Peak window: 6 – 10 am</span>
+                </div>
+            </header>
 
-<div class="container">
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">HOURS THIS WEEK</div>
+                    <div class="kpi-value" id="dash-hours-val">0.0h</div>
+                    <div class="kpi-subtext" id="dash-hours-sub">0% of 15h goal</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="dash-hours-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">DEEP FOCUS RATE</div>
+                    <div class="kpi-value" id="dash-focus-val">0%</div>
+                    <div class="kpi-subtext" id="dash-focus-sub">0 deep sessions</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="dash-focus-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">DAY STREAK</div>
+                    <div class="kpi-value" id="dash-streak-val">0</div>
+                    <div class="kpi-subtext" id="dash-streak-sub">0 total days logged</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="dash-streak-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">TOPICS THIS WEEK</div>
+                    <div class="kpi-value" id="dash-topics-val">0</div>
+                    <div class="kpi-subtext" id="dash-topics-sub">0 of 4 goal</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="dash-topics-bar"></div></div>
+                </div>
+            </div>
 
-  <!-- FORM -->
-  <div class="card">
-    <h2>Log Session</h2>
+            <div class="charts-section">
+                <div class="chart-col-left">
+                    <div class="chart-card">
+                        <h3 class="card-heading">HOURS PER DAY THIS WEEK</h3>
+                        <div class="canvas-wrapper" style="height: 140px; position: relative;">
+                            <canvas id="chart-hours" role="img" aria-label="Hours per day this week"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="card-heading">TOPIC DISTRIBUTION THIS WEEK</h3>
+                        <div id="legend-topic-week" class="custom-legend center-legend"></div>
+                        <div class="canvas-wrapper" style="height: 110px; position: relative;">
+                            <canvas id="chart-topic-week" role="img" aria-label="Topic distribution this week"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-col-right">
+                    <div class="chart-card">
+                        <h3 class="card-heading">TOPIC COMPLETION (ALL TIME)</h3>
+                        <div id="topic-completion-list" class="topic-list">
+                            <!-- Populated dynamically -->
+                            <div class="empty-state">Log sessions to see progress</div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="card-heading">FOCUS QUALITY THIS WEEK</h3>
+                        <div class="canvas-wrapper" style="height: 100px; position: relative;">
+                            <canvas id="chart-focus-week" role="img" aria-label="Focus quality this week"></canvas>
+                        </div>
+                        <div id="legend-focus-week" class="custom-legend center-legend"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <input type="date" id="date" />
-    <input type="number" id="duration" placeholder="Minutes" />
+        <!-- =======================
+             PAGE 2: LOG BOOK
+             ======================= -->
+        <section id="logbook-view" class="view hidden">
+            <header class="page-header">
+                <div class="header-left">
+                    <h1 class="page-title">Log Book</h1>
+                    <div id="week-subtitle" class="muted-text">Week of ...</div>
+                </div>
+                <div class="header-right">
+                    <button id="btn-study-tips" class="ghost-button" onclick="alert('Study tip: Break tasks into Pomodoro 25-min sessions!')">Study tips ↗</button>
+                </div>
+            </header>
 
-    <select id="topic">
-      <option value="">Select Topic</option>
-      <option>Python for DS</option>
-      <option>SQL</option>
-      <option>Machine Learning</option>
-      <option>Deep Learning</option>
-    </select>
+            <div class="week-strip" id="week-strip">
+                <!-- Populated dynamically -->
+            </div>
 
-    <select id="quality">
-      <option value="">Focus</option>
-      <option value="deep">Deep</option>
-      <option value="good">Good</option>
-      <option value="distracted">Distracted</option>
-    </select>
+            <div class="form-container">
+                <form id="add-session-form">
+                    <div class="form-row">
+                        <input type="date" id="input-date" required aria-label="Date">
+                        <input type="time" id="input-time" aria-label="Start Time">
+                        <input type="number" id="input-duration" placeholder="Min" required aria-label="Duration in minutes" min="1">
+                        <select id="input-topic" required aria-label="Topic">
+                            <!-- Populated by JS -->
+                        </select>
+                        <select id="input-energy" required aria-label="Energy">
+                            <option value="" disabled selected>Energy</option>
+                            <option value="5">High (5)</option>
+                            <option value="4">Good (4)</option>
+                            <option value="3">Medium (3)</option>
+                            <option value="2">Low (2)</option>
+                            <option value="1">Tired (1)</option>
+                        </select>
+                        <select id="input-focus" required aria-label="Focus Quality">
+                            <option value="" disabled selected>Focus</option>
+                            <option value="deep">Deep focus</option>
+                            <option value="good">Good focus</option>
+                            <option value="distracted">Distracted</option>
+                        </select>
+                        <input type="text" id="input-note" placeholder="Quick note (optional)" aria-label="Optional note">
+                        <button type="submit" class="btn-log">+ Log</button>
+                    </div>
+                </form>
+            </div>
 
-    <select id="difficulty">
-      <option value="">Difficulty</option>
-      <option value="easy">Easy</option>
-      <option value="medium">Medium</option>
-      <option value="hard">Hard</option>
-    </select>
+            <div class="table-container">
+                <table class="session-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th><th>Start</th><th>Duration</th><th>Topic</th><th>Energy</th><th>Focus</th><th>Note</th><th>✕</th>
+                        </tr>
+                    </thead>
+                    <tbody id="session-tbody">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
 
-    <select id="output">
-      <option value="">Output</option>
-      <option value="learning">Learning</option>
-      <option value="practice">Practice</option>
-      <option value="project">Project</option>
-    </select>
+            <footer class="log-footer">
+                <div class="footer-left muted-text">
+                    All past data is stored and feeds the Monthly Tracker.<br>Only this week shows here.
+                </div>
+                <div class="footer-right muted-text" id="total-stored-text">
+                    Total stored: 0 sessions across all weeks
+                </div>
+            </footer>
+        </section>
 
-    <button onclick="addLog()">+ Log</button>
-  </div>
+        <!-- =======================
+             PAGE 3: MONTHLY TRACKER
+             ======================= -->
+        <section id="monthly-view" class="view hidden">
+            <header class="page-header">
+                <div class="header-left">
+                    <h1 id="monthly-title" class="page-title">...</h1>
+                    <div class="muted-text">All data sourced from your log book</div>
+                </div>
+            </header>
 
-  <!-- KPIs -->
-  <div class="card">
-    <h2>Metrics</h2>
+            <div class="kpi-row">
+                <div class="kpi-card">
+                    <div class="kpi-label">TOTAL HOURS THIS MONTH</div>
+                    <div class="kpi-value" id="month-hours-val">0.0h</div>
+                    <div class="kpi-subtext">Goal: 60h/month</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="month-hours-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">AVG HOURS PER WEEK</div>
+                    <div class="kpi-value" id="month-avg-val">0.0h</div>
+                    <div class="kpi-subtext">Target: 15h/week</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="month-avg-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">TOTAL SESSIONS THIS MONTH</div>
+                    <div class="kpi-value" id="month-sessions-val">0</div>
+                    <div class="kpi-subtext">This month</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="month-sessions-bar"></div></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">DEEP FOCUS RATE THIS MONTH</div>
+                    <div class="kpi-value" id="month-focus-val">0%</div>
+                    <div class="kpi-subtext">Target: 70%</div>
+                    <div class="kpi-progress-track"><div class="kpi-progress-fill" id="month-focus-bar"></div></div>
+                </div>
+            </div>
 
-    <p>Learning Score: <span id="score">0</span></p>
-    <p>Build Ratio: <span id="build">0%</span></p>
-    <p>Total Hours: <span id="hours">0</span></p>
-  </div>
+            <div class="charts-section charts-row-monthly">
+                <div class="chart-card chart-col-half">
+                    <h3 class="card-heading">WEEKLY HOURS BREAKDOWN</h3>
+                    <div class="canvas-wrapper" style="height: 150px; position: relative;">
+                        <canvas id="chart-hours-monthly" role="img" aria-label="Weekly hours breakdown"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card chart-col-half">
+                    <h3 class="card-heading">MONTH STREAK CALENDAR</h3>
+                    <div class="calendar-container">
+                        <div class="calendar-days-header">
+                            <div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div><div>S</div>
+                        </div>
+                        <div id="calendar-grid" class="calendar-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                        <div class="calendar-legend mt-12">
+                            <div class="legend-item"><span class="legend-box box-green"></span> Studied</div>
+                            <div class="legend-item"><span class="legend-box box-grey"></span> Rest / future</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-  <!-- INSIGHTS -->
-  <div class="card">
-    <h2>Insights</h2>
-    <div id="insights"></div>
-  </div>
+            <div class="chart-card full-width-card mt-12">
+                <h3 class="card-heading">TOPIC PROGRESS</h3>
+                <div class="table-container no-border">
+                    <table class="session-table topic-table">
+                        <thead>
+                            <tr>
+                                <th>Topic</th><th>Category</th><th>Total hours</th><th>Sessions</th><th>Progress</th><th>Avg energy</th><th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="topic-progress-tbody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-</div>
+            <div class="kpi-row mt-12 summary-stats">
+                <div class="kpi-card">
+                    <div class="kpi-label">BEST STUDY DAY</div>
+                    <div class="kpi-value" id="stat-best-day">—</div>
+                    <div class="kpi-subtext" id="stat-best-day-sub">0 sessions</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">LONGEST SESSION</div>
+                    <div class="kpi-value" id="stat-longest-sess">0 min</div>
+                    <div class="kpi-subtext" id="stat-longest-sess-sub">—</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">TOPICS TOUCHED</div>
+                    <div class="kpi-value" id="stat-topics-touched">0</div>
+                    <div class="kpi-subtext">out of 15 total topics</div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-<script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
