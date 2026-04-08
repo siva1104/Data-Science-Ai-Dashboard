@@ -1,1 +1,75 @@
-dggdfs
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Learning Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<h1>AI Learning Performance Dashboard</h1>
+<p class="subtitle">
+Track learning quality, not just hours.
+</p>
+
+<div class="container">
+
+  <!-- FORM -->
+  <div class="card">
+    <h2>Log Session</h2>
+
+    <input type="date" id="date" />
+    <input type="number" id="duration" placeholder="Minutes" />
+
+    <select id="topic">
+      <option value="">Select Topic</option>
+      <option>Python for DS</option>
+      <option>SQL</option>
+      <option>Machine Learning</option>
+      <option>Deep Learning</option>
+    </select>
+
+    <select id="quality">
+      <option value="">Focus</option>
+      <option value="deep">Deep</option>
+      <option value="good">Good</option>
+      <option value="distracted">Distracted</option>
+    </select>
+
+    <select id="difficulty">
+      <option value="">Difficulty</option>
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+
+    <select id="output">
+      <option value="">Output</option>
+      <option value="learning">Learning</option>
+      <option value="practice">Practice</option>
+      <option value="project">Project</option>
+    </select>
+
+    <button onclick="addLog()">+ Log</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="card">
+    <h2>Metrics</h2>
+
+    <p>Learning Score: <span id="score">0</span></p>
+    <p>Build Ratio: <span id="build">0%</span></p>
+    <p>Total Hours: <span id="hours">0</span></p>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="card">
+    <h2>Insights</h2>
+    <div id="insights"></div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
