@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS & AI Learning Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
+    <button class="nav-tab" onclick="showPage('logbook',this)">Log Book</button>
+    <button class="nav-tab" onclick="showPage('monthly',this)">Monthly Tracker</button>
+  </div>
+</nav>
+
+<!-- ════════════════ PAGE 1: DASHBOARD ════════════════ -->
+<div id="page-dashboard" class="page show">
+<div class="inner">
+  <div class="pg-head">
+    <div>
+      <div class="pg-title" id="greeting">Good morning</div>
+      <div class="pg-date" id="today-date"></div>
+    </div>
+    <span class="peak-badge">Peak window: 6 – 10 am</span>
+  </div>
+
+  <div class="kpi-grid kpi-6">
+    <div class="kpi-card">
+      <div class="kpi-lbl">DAILY TARGET COMPLETION</div>
+      <div class="kpi-val" id="k-daily">0.0h</div>
+      <div class="kpi-sub" id="k-daily-sub">Target: 9h today</div>
+      <div class="kpi-track"><div class="kpi-fill fill-green" id="k-daily-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">DEEP WORK RATIO</div>
+      <div class="kpi-val" id="k-deep">0%</div>
+      <div class="kpi-sub" id="k-deep-sub">Target: 60% and above</div>
+      <div class="kpi-track"><div class="kpi-fill fill-purple" id="k-deep-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">BUILD RATIO</div>
+      <div class="kpi-val" id="k-build">0%</div>
+      <div class="kpi-sub" id="k-build-sub">Target: 35% and above</div>
+      <div class="kpi-track"><div class="kpi-fill fill-amber" id="k-build-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">SESSION EFFICIENCY</div>
+      <div class="kpi-val" id="k-eff">0%</div>
+      <div class="kpi-sub" id="k-eff-sub">Target: 75% and above</div>
+      <div class="kpi-track"><div class="kpi-fill fill-blue" id="k-eff-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">WEEKLY HOURS</div>
+      <div class="kpi-val" id="k-weekly">0.0h</div>
+      <div class="kpi-sub" id="k-weekly-sub">Target: 55 – 60h</div>
+      <div class="kpi-track"><div class="kpi-fill fill-green" id="k-weekly-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">CONSISTENCY STREAK</div>
+      <div class="kpi-val" id="k-streak">0</div>
+      <div class="kpi-sub" id="k-streak-sub">Days with 9h logged</div>
+      <div class="kpi-track"><div class="kpi-fill fill-amber" id="k-streak-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="chart-card span2">
+      <div class="chart-head"><span class="chart-title">Daily Hours Trend</span><span class="chart-sub">Mon – Sun · 9h target line</span></div>
+      <div class="cw h180"><canvas id="c-trend" role="img" aria-label="Daily hours trend"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Session Duration</span><span class="chart-sub">Distribution</span></div>
+      <div class="cw h160"><canvas id="c-dist" role="img" aria-label="Session duration distribution"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Focus Quality</span><span class="chart-sub">This week</span></div>
+      <div class="leg-row">
+        <span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Deep</span>
+        <span class="leg-item"><span class="leg-sq" style="background:#378ADD"></span>Good</span>
+        <span class="leg-item"><span class="leg-sq" style="background:#E24B4A"></span>Distracted</span>
+      </div>
+      <div class="cw h140"><canvas id="c-focus" role="img" aria-label="Focus quality doughnut"></canvas></div>
+    </div>
+    <div class="chart-card span2">
+      <div class="chart-head"><span class="chart-title">Time Allocation</span><span class="chart-sub">Learning / Practice / Project — this week</span></div>
+      <div class="leg-row">
+        <span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Learning</span>
+        <span class="leg-item"><span class="leg-sq" style="background:#378ADD"></span>Practice</span>
+        <span class="leg-item"><span class="leg-sq" style="background:#6940c8"></span>Project</span>
+      </div>
+      <div class="cw h160"><canvas id="c-alloc" role="img" aria-label="Time allocation stacked bar"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Topic Completion</span><span class="chart-sub">All time</span></div>
+      <div id="topic-prog" class="topic-list"><p class="empty">Log sessions to see progress</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════ PAGE 2: LOG BOOK ════════════════ -->
+<div id="page-logbook" class="page">
+<div class="inner">
+  <div class="pg-head">
+    <div>
+      <div class="pg-title">Log Book</div>
+      <div class="pg-date" id="week-label"></div>
+    </div>
+    <button class="ghost-btn" onclick="alert('Study tips:\n\n• 6–8am = hardest topic, deep focus\n• 90–120 min sessions for flow state\n• One topic per session\n• Log immediately after finishing')">Study tips ↗</button>
+  </div>
+
+  <div class="week-strip" id="week-strip"></div>
+
+  <div class="form-card">
+    <div class="form-ttl">Add today's session</div>
+    <div class="form-row">
+      <div class="fg">
+        <label class="flbl">Date</label>
+        <input type="date" id="f-date" class="finp" style="width:130px">
+      </div>
+      <div class="fg">
+        <label class="flbl">Start time</label>
+        <input type="time" id="f-start" class="finp" style="width:110px">
+      </div>
+      <div class="fg">
+        <label class="flbl">End time</label>
+        <input type="time" id="f-end" class="finp" style="width:110px">
+      </div>
+      <div class="fg fg2">
+        <label class="flbl">Topic</label>
+        <select id="f-topic" class="fsel">
+          <option value="">Select topic</option>
+          <option>Math Foundations</option><option>Probability</option><option>Statistics</option>
+          <option>Time Series</option><option>Power BI</option><option>Excel</option>
+          <option>Python for DS</option><option>SQL</option><option>Machine Learning</option>
+          <option>Deep Learning</option><option>NLP</option><option>Computer Vision</option>
+          <option>Generative AI</option><option>AI Agents</option><option>RAG Systems</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Energy</label>
+        <select id="f-energy" class="fsel">
+          <option value="">Energy</option>
+          <option value="5">High (5)</option><option value="4">Good (4)</option>
+          <option value="3">Medium (3)</option><option value="2">Low (2)</option><option value="1">Tired (1)</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Focus</label>
+        <select id="f-focus" class="fsel">
+          <option value="">Focus</option>
+          <option value="deep">Deep</option>
+          <option value="good">Good</option>
+          <option value="distracted">Distracted</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Difficulty</label>
+        <select id="f-diff" class="fsel">
+          <option value="">Difficulty</option>
+          <option value="hard">Hard</option>
+          <option value="medium">Medium</option>
+          <option value="easy">Easy</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="flbl">Session type</label>
+        <select id="f-type" class="fsel">
+          <option value="">Type</option>
+          <option value="learning">Learning</option>
+          <option value="practice">Practice</option>
+          <option value="project">Project</option>
+        </select>
+      </div>
+      <div class="fg fg3">
+        <label class="flbl">Output</label>
+        <input type="text" id="f-output" class="finp" placeholder="What did you produce or complete?">
+      </div>
+      <div class="fg fg3">
+        <label class="flbl">Notes</label>
+        <input type="text" id="f-note" class="finp" placeholder="Optional notes">
+      </div>
+      <div class="fg" style="align-self:flex-end">
+        <button class="add-btn" onclick="addLog()">+ Log</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tbl-card">
+    <div class="tbl-head-row">
+      <span class="chart-title">This week's sessions</span>
+      <span class="chart-sub" id="week-count-lbl"></span>
+    </div>
+    <div class="tbl-scroll">
+      <table class="log-tbl">
+        <thead><tr>
+          <th>Date</th><th>Start</th><th>End</th><th>Duration</th>
+          <th>Topic</th><th>Energy</th><th>Focus</th><th>Difficulty</th>
+          <th>Type</th><th>Output</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody id="log-tbody">
+          <tr><td colspan="12" class="empty">No sessions logged this week — add one above</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="log-footer">
+    <span>All past data is stored and feeds the Monthly Tracker. Only this week shows here.</span>
+    <span id="total-stored"></span>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════ PAGE 3: MONTHLY TRACKER ════════════════ -->
+<div id="page-monthly" class="page">
+<div class="inner">
+  <div class="pg-head">
+    <div>
+      <div class="pg-title" id="month-title"></div>
+      <div class="pg-date">All data sourced from your log book</div>
+    </div>
+  </div>
+
+  <div class="kpi-grid kpi-4">
+    <div class="kpi-card">
+      <div class="kpi-lbl">TOTAL HOURS THIS MONTH</div>
+      <div class="kpi-val" id="m-hrs">0.0h</div>
+      <div class="kpi-sub">Goal: 60h / month</div>
+      <div class="kpi-track"><div class="kpi-fill fill-green" id="m-hrs-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">AVG HOURS PER WEEK</div>
+      <div class="kpi-val" id="m-avg">0.0h</div>
+      <div class="kpi-sub">Target: 15h / week</div>
+      <div class="kpi-track"><div class="kpi-fill fill-purple" id="m-avg-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">DEEP WORK %</div>
+      <div class="kpi-val" id="m-deep">0%</div>
+      <div class="kpi-sub">Target: 70%</div>
+      <div class="kpi-track"><div class="kpi-fill fill-blue" id="m-deep-bar" style="width:0%"></div></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-lbl">TOTAL SESSIONS</div>
+      <div class="kpi-val" id="m-sess">0</div>
+      <div class="kpi-sub">This month</div>
+      <div class="kpi-track"><div class="kpi-fill fill-amber" id="m-sess-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div class="charts-2col">
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Weekly Hours Breakdown</span><span class="chart-sub">This month</span></div>
+      <div class="cw h200"><canvas id="c-weekly" role="img" aria-label="Weekly hours bar chart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head"><span class="chart-title">Month Streak Calendar</span><span class="chart-sub">Days studied</span></div>
+      <div id="month-cal" class="month-cal"></div>
+      <div class="leg-row" style="margin-top:12px">
+        <span class="leg-item"><span class="leg-sq" style="background:#1D9E75"></span>Studied</span>
+        <span class="leg-item"><span class="leg-sq" style="background:#e0e0e0"></span>Rest / future</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="full-card">
+    <div class="tbl-head-row">
+      <span class="chart-title">Topic Progress</span>
+      <span class="chart-sub">All time · from your log book</span>
+    </div>
+    <div class="tbl-scroll">
+      <table class="log-tbl" style="width:100%">
+        <thead><tr>
+          <th>Topic</th><th>Category</th><th>Total hours</th>
+          <th>Sessions</th><th>Avg energy</th><th>Status</th>
+        </tr></thead>
+        <tbody id="topic-tbody">
+          <tr><td colspan="6" class="empty">Log sessions to see topic data</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
